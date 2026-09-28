@@ -1,2 +1,5 @@
 # City-Explorer
-lab1tw
+Mini-site de prezentare a unor destinații turistice,
+realizat în cadrul disciplinei Tehnologii Web.
+Autor: Morosanu Mario
+
