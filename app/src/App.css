@@ -1,3 +1,5 @@
+/* ===== Pagina ===== */
+
 main {
   max-width: 720px;
   margin: 2rem auto;
@@ -13,21 +15,6 @@ h1 {
   color: #4b5563;
   margin-top: 0;
   margin-bottom: 1.2rem;
-}
-
-.formular {
-  display: flex;
-  gap: 0.6rem;
-  margin-bottom: 1.5rem;
-}
-
-.formular input {
-  flex: 1;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid #c3c7cf;
-  border-radius: 7px;
-  font: inherit;
-  min-width: 0;
 }
 
 button {
@@ -46,42 +33,7 @@ button {
   background: #f3f4f6;
 }
 
-.lista {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.9rem;
-}
-
-.card {
-  border: 1px solid #d8dbe0;
-  border-radius: 10px;
-  padding: 0.9rem 1rem;
-}
-
-.card h3 {
-  margin: 0 0 0.2rem;
-}
-
-.card .tara,
-.card .zile {
-  margin: 0;
-  color: #6b7280;
-  font-size: 0.85rem;
-}
-
-.card button {
-  margin-top: 0.7rem;
-  width: 100%;
-}
-
-.card.vizitat {
-  background: #f0fdf4;
-  border-color: #86efac;
-}
-
-.card.vizitat button {
-  background: #16a34a;
-}
+/* ===== Lista și cardurile ===== */
 
 .lista {
   display: grid;
@@ -120,6 +72,89 @@ button {
   background: #16a34a;
 }
 
-.card button:last-of-type {
-  background: #dc2626;
+/* ===== Laboratorul 4: formular, căutare, stări ===== */
+
+.formular {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.camp {
+  flex: 1;
+  min-width: 0;
+}
+
+.camp input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formular input {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #c3c7cf;
+  border-radius: 7px;
+  font: inherit;
+  min-width: 0;
+}
+
+.formular input.invalid {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.eroare-camp {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: #b91c1c;
+}
+
+.cautare {
+  margin-bottom: 1.2rem;
+}
+
+.cautare input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #c3c7cf;
+  border-radius: 7px;
+  font: inherit;
+}
+
+.stare {
+  padding: 0.8rem 1rem;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+.stare.eroare {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+button:disabled {
+  background: #a5a3c4;
+  cursor: default;
+}
+
+.gol {
+  padding: 1.5rem;
+  border: 1px dashed #c3c7cf;
+  border-radius: 10px;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* ===== Paginarea (exercițiul 5) ===== */
+
+.paginare {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }

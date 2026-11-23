@@ -1,50 +1,94 @@
 import { useState } from 'react'
 
-export default function FormularDestinatie({ onAdd }) {
-  const [oras, setOras] = useState('')
-  const [tara, setTara] = useState('')
-  const [zile, setZile] = useState('')
+const VALORI_INITIALE = { oras: '', tara: '', zile: '' }
 
-  function handleSubmit(event) {
+function valideaza(valori) {
+  const erori = {}
+
+  if (valori.oras.trim().length < 2) {
+    erori.oras = 'Orașul are cel puțin două caractere.'
+  }
+
+  if (valori.tara.trim() === '') {
+    erori.tara = 'Țara este obligatorie.'
+  }
+
+  const zile = Number(valori.zile)
+  if (valori.zile.trim() === '' || Number.isNaN(zile) || zile < 1 || zile > 30) {
+    erori.zile = 'Numărul de zile este între 1 și 30.'
+  }
+
+  return erori
+}
+
+export default function FormularDestinatie({ onAdd, seTrimite }) {
+  const [valori, setValori] = useState(VALORI_INITIALE)
+  const [erori, setErori] = useState({})
+
+  function handleChange(event) {
+    const { name, value } = event.target
+    setValori((curent) => ({ ...curent, [name]: value }))
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault()
 
-    if (!oras.trim() || !tara.trim()) return
+    const gasite = valideaza(valori)
+    setErori(gasite)
 
-    onAdd({
-      id: crypto.randomUUID(),
-      oras: oras.trim(),
-      tara: tara.trim(),
-      zile: Number(zile),
+    if (Object.keys(gasite).length > 0) return
+
+    const reusit = await onAdd({
+      oras: valori.oras.trim(),
+      tara: valori.tara.trim(),
+      zile: Number(valori.zile),
       vizitat: false,
     })
 
-    setOras('')
-    setTara('')
-    setZile('')
+    if (reusit) {
+      setValori(VALORI_INITIALE)
+    }
   }
 
   return (
-    <form className="formular" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Oraș"
-        value={oras}
-        onChange={(e) => setOras(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Țară"
-        value={tara}
-        onChange={(e) => setTara(e.target.value)}
-      />
-      <input
-        type="number"
-        min="1"
-        placeholder="Zile"
-        value={zile}
-        onChange={(e) => setZile(e.target.value)}
-      />
-      <button type="submit">Adaugă</button>
+    <form className="formular" onSubmit={handleSubmit} noValidate>
+      <div className="camp">
+        <input
+          name="oras"
+          placeholder="Oraș"
+          value={valori.oras}
+          onChange={handleChange}
+          className={erori.oras ? 'invalid' : ''}
+        />
+        {erori.oras && <p className="eroare-camp">{erori.oras}</p>}
+      </div>
+
+      <div className="camp">
+        <input
+          name="tara"
+          placeholder="Țară"
+          value={valori.tara}
+          onChange={handleChange}
+          className={erori.tara ? 'invalid' : ''}
+        />
+        {erori.tara && <p className="eroare-camp">{erori.tara}</p>}
+      </div>
+
+      <div className="camp">
+        <input
+          name="zile"
+          type="number"
+          placeholder="Zile"
+          value={valori.zile}
+          onChange={handleChange}
+          className={erori.zile ? 'invalid' : ''}
+        />
+        {erori.zile && <p className="eroare-camp">{erori.zile}</p>}
+      </div>
+
+      <button type="submit" disabled={seTrimite}>
+        {seTrimite ? 'Se trimite...' : 'Adaugă'}
+      </button>
     </form>
   )
 }
