@@ -1,43 +1,25 @@
 import { useEffect, useState } from 'react'
+import { getStatistici } from '../api/statistici.js'
 
 export default function PanouStatistici() {
-  const [destinatii, setDestinatii] = useState([])
-  const [incarcare, setIncarcare] = useState(true)
-  const [eroare, setEroare] = useState(null)
   const [prag, setPrag] = useState('3')
+  const [tara, setTara] = useState('')
+  const [statistici, setStatistici] = useState(null)
+  const [eroare, setEroare] = useState(null)
 
   useEffect(() => {
     async function incarca() {
       try {
-        const response = await fetch('http://localhost:3001/destinatii')
-
-        if (!response.ok) {
-          throw new Error(`Serverul a răspuns cu ${response.status}`)
-        }
-
-        const date = await response.json()
-        setDestinatii(date)
+        const date = await getStatistici(prag, tara.trim())
+        setStatistici(date)
+        setEroare(null)
       } catch (err) {
         setEroare(err.message)
-      } finally {
-        setIncarcare(false)
       }
     }
 
     incarca()
-  }, [])
-
-  if (incarcare) {
-    return <p className="stare">Se încarcă statisticile...</p>
-  }
-
-  if (eroare) {
-    return <p className="stare eroare">Statistici indisponibile: {eroare}</p>
-  }
-
-  const filtrate = destinatii.filter((d) => d.zile >= Number(prag))
-  const totalZile = filtrate.reduce((suma, d) => suma + d.zile, 0)
-  const medie = filtrate.length === 0 ? 0 : totalZile / filtrate.length
+  }, [prag, tara])
 
   return (
     <section className="panou">
@@ -47,21 +29,31 @@ export default function PanouStatistici() {
         Cel puțin{' '}
         <input
           type="number"
+          min="1"
           value={prag}
           onChange={(e) => setPrag(e.target.value)}
         />{' '}
         zile
       </label>
 
-      {filtrate.length === 0 && (
-        <p className="gol">Nicio destinație cu cel puțin {prag} zile.</p>
-      )}
+      <label>
+        Țară{' '}
+        <input
+          className="tara"
+          type="text"
+          placeholder="toate"
+          value={tara}
+          onChange={(e) => setTara(e.target.value)}
+        />
+      </label>
 
-      {filtrate.length > 0 && (
+      {eroare && <p className="stare eroare">Statistici indisponibile: {eroare}</p>}
+
+      {!eroare && statistici && (
         <ul>
-          <li>Destinații: {filtrate.length}</li>
-          <li>Total zile: {totalZile}</li>
-          <li>Media: {medie.toFixed(1)} zile</li>
+          <li>Destinații: {statistici.destinatii}</li>
+          <li>Total zile: {statistici.zile}</li>
+          <li>Media: {statistici.medie} zile</li>
         </ul>
       )}
     </section>

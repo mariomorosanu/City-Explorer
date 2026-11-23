@@ -4,6 +4,7 @@ import { getNevizitate, totalZile, adaugaDestinatie } from './utils/destinatii.j
 import Rezumat from './components/Rezumat.jsx'
 import FormularDestinatie from './components/FormularDestinatie.jsx'
 import Cautare from './components/Cautare.jsx'
+import PanouStatistici from './components/PanouStatistici.jsx'
 import ListaDestinatii from './components/ListaDestinatii.jsx'
 import './App.css'
 
@@ -13,15 +14,12 @@ export default function App() {
   const [eroare, setEroare] = useState(null)
   const [seTrimite, setSeTrimite] = useState(false)
   const [cautare, setCautare] = useState('')
-  const [pagina, setPagina] = useState(1)
-  const [totalPagini, setTotalPagini] = useState(1)
 
   useEffect(() => {
     async function incarca() {
       try {
-        const rezultat = await getDestinatii(pagina)
-        setDestinatii(rezultat.data)
-        setTotalPagini(rezultat.pages)
+        const date = await getDestinatii()
+        setDestinatii(date)
       } catch (error) {
         setEroare(error.message)
       } finally {
@@ -30,7 +28,7 @@ export default function App() {
     }
 
     incarca()
-  }, [pagina])
+  }, [])
 
   async function handleToggle(id) {
     const curenta = destinatii.find((d) => d.id === id)
@@ -86,6 +84,7 @@ export default function App() {
           />
           <FormularDestinatie onAdd={handleAdd} seTrimite={seTrimite} />
           <Cautare valoare={cautare} onChange={setCautare} />
+          <PanouStatistici />
 
           {destinatii.length === 0 && (
             <p className="gol">Nu există nicio destinație. Adaugă prima din formular.</p>
@@ -98,24 +97,6 @@ export default function App() {
           {afisate.length > 0 && (
             <ListaDestinatii destinatii={afisate} onToggle={handleToggle} />
           )}
-
-          <div className="paginare">
-            <button
-              type="button"
-              onClick={() => setPagina((p) => p - 1)}
-              disabled={pagina === 1}
-            >
-              Înapoi
-            </button>
-            <span>pagina {pagina} din {totalPagini}</span>
-            <button
-              type="button"
-              onClick={() => setPagina((p) => p + 1)}
-              disabled={pagina === totalPagini}
-            >
-              Înainte
-            </button>
-          </div>
         </>
       )}
     </main>
